@@ -9,11 +9,13 @@ import org.springframework.stereotype.Component;
 public class RouteTwo extends RouteBuilder {
 
 
-    String kafkaServer = "kafka:localhost:9092";
-    String zooKeeperHost = "zookeeperHost=localhost&zookeeperPort=2181";
-    String serializerClass = "serializerClass=kafka.serializer.StringEncoder";
-    String toKafka = new StringBuilder().append(kafkaServer).append("?").append("testTopoicMsg").append("&")
-            .append(zooKeeperHost).append("&").append(serializerClass).toString();
+    @Value("${topic.name.producer}")
+    private String topicName;
+
+    private static final String KAFKA_HOST_SERVER   = "kafka://localhost:9092?";
+    private static final String KAFKA_TOPIC_NAME    = "topic=testTopicMsg";
+    private static final String KAFKA_BROKER_NAME   = "&brokers=localhost:9092";
+    String destination = KAFKA_HOST_SERVER + KAFKA_TOPIC_NAME + KAFKA_BROKER_NAME;
 
 
     @Override
@@ -22,8 +24,8 @@ public class RouteTwo extends RouteBuilder {
                 log("+++++++++++++++++++ Consume Data from File and save data in output folder  +++++++++++++++++++").
                 log("Pattern: ${exchange.pattern}").
 
-               // to(toKafka).
-              //  to("kafka:testTopicMsg?brokers=localhost:9092").
+                to(destination).
+              //  to("kafka:topicName?brokers=localhost:9092").
                 to("file:/Users/muthaharshaik/Desktop/AAAA/output");
 
     }
